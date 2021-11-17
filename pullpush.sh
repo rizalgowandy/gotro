@@ -7,7 +7,12 @@ if [ $# -eq 0 ] ; then
 fi
 
 # format indentation
-gofmt -s -w . # go fmt `find . -name '*.go' -type f`
+for file in $(git diff --cached --name-only --diff-filter=ACMRTUXB | grep "\.go")
+do
+	echo "(fmt) $file"
+	goimports -w $file
+	git add "$file"
+done
 echo "codes formatted.."
 
 # testing if has error
