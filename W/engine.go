@@ -317,7 +317,7 @@ func NewEngine(debugMode, multiApp bool, projectName, baseDir string) *Engine {
 	}
 
 	log_dir := baseDir + LOG_SUBDIR
-	L.IsError(os.Mkdir(log_dir, os.ModePerm), `NewEngine.Mkdir: `+log_dir)
+	L.IsError(os.MkdirAll(log_dir, os.ModePerm), `NewEngine.Mkdir: `+log_dir)
 	log_file := log_dir + S.If(debugMode, `local_`) + `ajax_` + T.Filename() + `.log`
 	logger, err := os.OpenFile(log_file, os.O_CREATE|os.O_APPEND|os.O_WRONLY, os.ModePerm)
 	L.PanicIf(err, `failed create log file: `+log_file)
