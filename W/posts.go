@@ -52,7 +52,9 @@ func (p *Posts) FromContext(ctx *Context) {
 			//L.Print(`* ` + k + `: ` + S.IfElse(len(v[0]) < 128, v[0], `length=`+I.ToStr(len(v[0]))) + S.If(len(v) > 1, ` [warning: array form ignored: `+I.ToStr(len(v))+`]`))
 		}
 	} else {
-		L.Print(`Error Parsing Post Data: ` + err.Error())
+		if err.Error() != `request Content-Type has bad boundary or is not multipart/form-data` {
+			L.Print(`Error Parsing Post Data: ` + err.Error())
+		}
 	}
 }
 
