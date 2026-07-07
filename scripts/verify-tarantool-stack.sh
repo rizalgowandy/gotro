@@ -7,4 +7,4 @@ if rg -n 'github\.com/tarantool/go-openssl|github\.com/tarantool/go-tarantool([[
 fi
 
 go list -m github.com/tarantool/go-tarantool/v2
-go test ./D/Tt ./X
+go test ./D/Tt ./D/Tt/mZzz ./D/Tt/mZzz/rqZzz ./D/Tt/mZzz/wcZzz ./X

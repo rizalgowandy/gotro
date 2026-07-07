@@ -56,14 +56,16 @@ func (z *ZzzMutator) toOverwriteArray() *tarantool.Operations { //nolint:dupl fa
 		Assign(1, z.CreatedAt).
 		Assign(2, z.Coords).
 		Assign(3, z.Name).
-		Assign(4, z.HeightMeter)
+		Assign(4, z.HeightMeter).
+		Assign(5, z.Counter).
+		Assign(6, z.IsActive)
 }
 
 // DoOverwriteById update all columns, error if not exists, not using mutations/Set*
 func (z *ZzzMutator) DoOverwriteById() bool { //nolint:dupl false positive
 	_, err := z.Adapter.RetryDo(tarantool.NewUpdateRequest(z.SpaceName()).
 		Index(z.UniqueIndexId()).
-		Key(tarantool.UintKey{I:uint(z.Id)}).
+		Key(Tt.Uint64Key{I:z.Id}).
 		Operations(z.toOverwriteArray()),
 	)
 	return !L.IsError(err, `Zzz.DoOverwriteById failed: `+z.SpaceName())
@@ -77,7 +79,7 @@ func (z *ZzzMutator) DoUpdateById() bool { //nolint:dupl false positive
 	_, err := z.Adapter.RetryDo(
 		tarantool.NewUpdateRequest(z.SpaceName()).
 		Index(z.UniqueIndexId()).
-		Key(tarantool.UintKey{I:uint(z.Id)}).
+		Key(Tt.Uint64Key{I:z.Id}).
 		Operations(z.mutations),
 	)
 	return !L.IsError(err, `Zzz.DoUpdateById failed: `+z.SpaceName())
@@ -88,7 +90,7 @@ func (z *ZzzMutator) DoDeletePermanentById() bool { //nolint:dupl false positive
 	_, err := z.Adapter.RetryDo(
 		tarantool.NewDeleteRequest(z.SpaceName()).
 		Index(z.UniqueIndexId()).
-		Key(tarantool.UintKey{I:uint(z.Id)}),
+		Key(Tt.Uint64Key{I:z.Id}),
 	)
 	return !L.IsError(err, `Zzz.DoDeletePermanentById failed: `+z.SpaceName())
 }
@@ -206,6 +208,28 @@ func (z *ZzzMutator) SetHeightMeter(val float64) bool { //nolint:dupl false posi
 	return false
 }
 
+// SetCounter create mutations, should not duplicate
+func (z *ZzzMutator) SetCounter(val uint64) bool { //nolint:dupl false positive
+	if val != z.Counter {
+		z.mutations.Assign(5, val)
+		z.logs = append(z.logs, A.X{`counter`, z.Counter, val})
+		z.Counter = val
+		return true
+	}
+	return false
+}
+
+// SetIsActive create mutations, should not duplicate
+func (z *ZzzMutator) SetIsActive(val bool) bool { //nolint:dupl false positive
+	if val != z.IsActive {
+		z.mutations.Assign(6, val)
+		z.logs = append(z.logs, A.X{`isActive`, z.IsActive, val})
+		z.IsActive = val
+		return true
+	}
+	return false
+}
+
 // SetAll set all from another source, only if another property is not empty/nil/zero or in forceMap
 func (z *ZzzMutator) SetAll(from rqZzz.Zzz, excludeMap, forceMap M.SB) (changed bool) { //nolint:dupl false positive
 	if excludeMap == nil { // list of fields to exclude
@@ -232,6 +256,14 @@ func (z *ZzzMutator) SetAll(from rqZzz.Zzz, excludeMap, forceMap M.SB) (changed 
 	}
 	if !excludeMap[`heightMeter`] && (forceMap[`heightMeter`] || from.HeightMeter != 0) {
 		z.HeightMeter = from.HeightMeter
+		changed = true
+	}
+	if !excludeMap[`counter`] && (forceMap[`counter`] || from.Counter != 0) {
+		z.Counter = from.Counter
+		changed = true
+	}
+	if !excludeMap[`isActive`] && (forceMap[`isActive`] || from.IsActive != false) {
+		z.IsActive = from.IsActive
 		changed = true
 	}
 	return

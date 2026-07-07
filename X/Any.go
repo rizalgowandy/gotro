@@ -521,15 +521,15 @@ func ToS(x any) string {
 	case int64:
 		return strconv.FormatInt(v, 10)
 	case uint:
-		return strconv.FormatInt(int64(v), 10)
+		return strconv.FormatUint(uint64(v), 10)
 	case uint8:
-		return strconv.FormatInt(int64(v), 10)
+		return strconv.FormatUint(uint64(v), 10)
 	case uint16:
-		return strconv.FormatInt(int64(v), 10)
+		return strconv.FormatUint(uint64(v), 10)
 	case uint32:
-		return strconv.FormatInt(int64(v), 10)
+		return strconv.FormatUint(uint64(v), 10)
 	case uint64:
-		return strconv.FormatInt(int64(v), 10)
+		return strconv.FormatUint(v, 10)
 	case float32:
 		return strconv.FormatFloat(float64(v), 'f', -1, 64)
 	case float64:
@@ -540,7 +540,7 @@ func ToS(x any) string {
 		}
 	case *uint:
 		if v != nil {
-			return strconv.FormatInt(int64(*v), 10)
+			return strconv.FormatUint(uint64(*v), 10)
 		}
 	case *int8:
 		if v != nil {
@@ -560,19 +560,19 @@ func ToS(x any) string {
 		}
 	case *uint8:
 		if v != nil {
-			return strconv.FormatInt(int64(*v), 10)
+			return strconv.FormatUint(uint64(*v), 10)
 		}
 	case *uint16:
 		if v != nil {
-			return strconv.FormatInt(int64(*v), 10)
+			return strconv.FormatUint(uint64(*v), 10)
 		}
 	case *uint32:
 		if v != nil {
-			return strconv.FormatInt(int64(*v), 10)
+			return strconv.FormatUint(uint64(*v), 10)
 		}
 	case *uint64:
 		if v != nil {
-			return strconv.FormatInt(int64(*v), 10)
+			return strconv.FormatUint(*v, 10)
 		}
 	case *float32:
 		if v != nil {

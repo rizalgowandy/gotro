@@ -162,7 +162,7 @@ var dbConn *tarantool.Connection
 
 func prepareDb(onReady func(db *tarantool.Connection) int) {
 	const dockerRepo = "tarantool/tarantool"
-	const dockerVer = "3.1"
+	const dockerVer = Tt.LatestTarantoolDockerTag
 	const ttPort = "3301/tcp"
 	const dbConnStr = "127.0.0.1:%s"
 	const dbUser = "guest"
@@ -1199,6 +1199,95 @@ func TestGeneratedSanity(t *testing.T) {
 			WCT(`	assert.True(t, u.DoDeletePermanentById())` + "\n")
 		}
 		WCT(`}` + "\n\n")
+
+		if props.AutoIncrementId {
+			WCT(`func TestGenerated` + structName + `LargeUnsignedRoundTrip(t *testing.T) {` + "\n")
+			WCT(`	if dbConn == nil {` + "\n")
+			WCT(`		t.Skip("docker unavailable")` + "\n")
+			WCT(`	}` + "\n")
+			WCT(`	a := &Tt.Adapter{Connection: dbConn, Reconnect: reconnect}` + "\n")
+			WCT(`	ok := a.UpsertTable(` + tableConst + `, ` + mPkgName + `.TarantoolTables[` + tableConst + `])` + "\n")
+			WCT(`	assert.True(t, ok)` + "\n")
+			WCT(`	_ = a.TruncateTable(string(` + tableConst + `))` + "\n")
+			WCT(`	const largeUnsignedId = uint64(1<<63) + 77` + "\n")
+			WCT(`	const largeUnsignedValue = uint64(1<<63) + 123` + "\n")
+			WCT(`	const largeSigned = int64(1<<62) + 1234` + "\n")
+			WCT(`	const largeSignedUpdated = int64(1<<62) + 5678` + "\n")
+			WCT(`	rec := New` + structName + `Mutator(a)` + "\n")
+			for _, field := range props.Fields {
+				camel := S.PascalCase(field.Name)
+				switch {
+				case field.Name == IdCol:
+					WCT(`	rec.` + camel + ` = largeUnsignedId` + "\n")
+				case field.Type == Unsigned:
+					WCT(`	rec.` + camel + ` = largeUnsignedValue` + "\n")
+				case field.Type == Integer:
+					WCT(`	rec.` + camel + ` = largeSigned` + "\n")
+				default:
+					WCT(`	rec.` + camel + ` = ` + testSampleLiteral(field.Type) + "\n")
+				}
+			}
+			WCT(`	assert.True(t, rec.DoInsert())` + "\n")
+			WCT(`	assert.Equal(t, largeUnsignedId, rec.Id)` + "\n")
+			WCT(`	rawRows, err := a.RetryDo(` + "\n")
+			WCT(`		tarantool.NewSelectRequest(rec.SpaceName()).` + "\n")
+			WCT(`			Index(rec.UniqueIndexId()).` + "\n")
+			WCT(`			Limit(1).` + "\n")
+			WCT(`			Iterator(tarantool.IterEq).` + "\n")
+			WCT(`			Key(Tt.Uint64Key{I: largeUnsignedId}),` + "\n")
+			WCT(`	)` + "\n")
+			WCT(`	assert.NoError(t, err)` + "\n")
+			WCT(`	if assert.Len(t, rawRows, 1) {` + "\n")
+			WCT(`		row, ok := rawRows[0].([]any)` + "\n")
+			WCT(`		if assert.True(t, ok) && assert.NotEmpty(t, row) {` + "\n")
+			WCT(`			assert.IsType(t, uint64(0), row[0])` + "\n")
+			WCT(`			assert.Equal(t, largeUnsignedId, row[0])` + "\n")
+			for idx, field := range props.Fields {
+				if field.Name == IdCol || field.Type != Unsigned {
+					continue
+				}
+				WCT(`			assert.IsType(t, uint64(0), row[` + X.ToS(idx) + `])` + "\n")
+				WCT(`			assert.Equal(t, largeUnsignedValue, row[` + X.ToS(idx) + `])` + "\n")
+			}
+			WCT(`		}` + "\n")
+			WCT(`	}` + "\n")
+			WCT(`	readInsert := New` + structName + `Mutator(a)` + "\n")
+			WCT(`	readInsert.Id = largeUnsignedId` + "\n")
+			WCT(`	assert.True(t, readInsert.FindById())` + "\n")
+			for _, field := range props.Fields {
+				camel := S.PascalCase(field.Name)
+				WCT(`	assert.Equal(t, rec.` + camel + `, readInsert.` + camel + `)` + "\n")
+			}
+			if hasUpdateField {
+				updCamel := S.PascalCase(updateField.Name)
+				updateValue := testSampleLiteralAlt(updateField.Type)
+				if updateField.Type == Integer {
+					updateValue = `largeSignedUpdated`
+				}
+				WCT(`	assert.True(t, rec.Set` + updCamel + `(` + updateValue + `))` + "\n")
+				WCT(`	assert.True(t, rec.DoUpdateById())` + "\n")
+				WCT(`	readUpdate := New` + structName + `Mutator(a)` + "\n")
+				WCT(`	readUpdate.Id = largeUnsignedId` + "\n")
+				WCT(`	assert.True(t, readUpdate.FindById())` + "\n")
+				for _, field := range props.Fields {
+					camel := S.PascalCase(field.Name)
+					WCT(`	assert.Equal(t, rec.` + camel + `, readUpdate.` + camel + `)` + "\n")
+				}
+			}
+			WCT(`	assert.True(t, rec.DoOverwriteById())` + "\n")
+			WCT(`	readOverwrite := New` + structName + `Mutator(a)` + "\n")
+			WCT(`	readOverwrite.Id = largeUnsignedId` + "\n")
+			WCT(`	assert.True(t, readOverwrite.FindById())` + "\n")
+			for _, field := range props.Fields {
+				camel := S.PascalCase(field.Name)
+				WCT(`	assert.Equal(t, rec.` + camel + `, readOverwrite.` + camel + `)` + "\n")
+			}
+			WCT(`	assert.True(t, rec.DoDeletePermanentById())` + "\n")
+			WCT(`	deleted := New` + structName + `Mutator(a)` + "\n")
+			WCT(`	deleted.Id = largeUnsignedId` + "\n")
+			WCT(`	assert.False(t, deleted.FindById())` + "\n")
+			WCT(`}` + "\n\n")
+		}
 
 		BOTH(warning)
 

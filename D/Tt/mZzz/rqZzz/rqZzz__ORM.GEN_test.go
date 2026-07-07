@@ -18,8 +18,10 @@ func TestGeneratedZzzOrmHelpers(t *testing.T) {
 	q.Coords = []any{1.1, 2.2}
 	q.Name = "sample"
 	q.HeightMeter = 1.5
+	q.Counter = uint64(1)
+	q.IsActive = true
 	arr := q.ToArray()
-	assert.Len(t, arr, 5)
+	assert.Len(t, arr, 7)
 	assert.NotNil(t, q.ToUpdateArray())
 	decoded := (&Zzz{}).FromArray(arr)
 	assert.Equal(t, q.Id, decoded.Id)
@@ -27,12 +29,16 @@ func TestGeneratedZzzOrmHelpers(t *testing.T) {
 	assert.Equal(t, q.Coords, decoded.Coords)
 	assert.Equal(t, q.Name, decoded.Name)
 	assert.Equal(t, q.HeightMeter, decoded.HeightMeter)
+	assert.Equal(t, q.Counter, decoded.Counter)
+	assert.Equal(t, q.IsActive, decoded.IsActive)
 	decoded2 := (&Zzz{}).FromUncensoredArray(arr)
 	assert.Equal(t, q.Id, decoded2.Id)
 	assert.Equal(t, q.CreatedAt, decoded2.CreatedAt)
 	assert.Equal(t, q.Coords, decoded2.Coords)
 	assert.Equal(t, q.Name, decoded2.Name)
 	assert.Equal(t, q.HeightMeter, decoded2.HeightMeter)
+	assert.Equal(t, q.Counter, decoded2.Counter)
+	assert.Equal(t, q.IsActive, decoded2.IsActive)
 	assert.Equal(t, 0, q.IdxId())
 	assert.Equal(t, `"id"`, q.SqlId())
 	assert.Equal(t, 1, q.IdxCreatedAt())
@@ -43,6 +49,10 @@ func TestGeneratedZzzOrmHelpers(t *testing.T) {
 	assert.Equal(t, `"name"`, q.SqlName())
 	assert.Equal(t, 4, q.IdxHeightMeter())
 	assert.Equal(t, `"heightMeter"`, q.SqlHeightMeter())
+	assert.Equal(t, 5, q.IdxCounter())
+	assert.Equal(t, `"counter"`, q.SqlCounter())
+	assert.Equal(t, 6, q.IdxIsActive())
+	assert.Equal(t, `"isActive"`, q.SqlIsActive())
 	_, ok := ZzzFieldTypeMap[`id`]
 	assert.True(t, ok)
 	assert.NotEmpty(t, q.UniqueIndexId())
@@ -57,6 +67,8 @@ func TestGeneratedZzzDbMethodsPanic(t *testing.T) {
 	q.Coords = []any{1.1, 2.2}
 	q.Name = "sample"
 	q.HeightMeter = 1.5
+	q.Counter = uint64(1)
+	q.IsActive = true
 	assert.Panics(t, func() { _ = q.FindById() })
 	assert.Panics(t, func() { _ = q.FindByName() })
 	assert.Panics(t, func() { _ = q.FindOffsetLimit(0, 1, "") })

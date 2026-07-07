@@ -66,10 +66,10 @@ func TestQueryMetaFromVariants(t *testing.T) {
 
 func TestFieldKeyRenderer(t *testing.T) {
 	unsigned := Field{Type: Unsigned}.KeyRenderer()
-	assert.Equal(t, `tarantool.UintKey{I:uint(id)}`, unsigned(`id`))
+	assert.Equal(t, `Tt.Uint64Key{I:id}`, unsigned(`id`))
 
 	integer := Field{Type: Integer}.KeyRenderer()
-	assert.Equal(t, `tarantool.IntKey{I:int(age)}`, integer(`age`))
+	assert.Equal(t, `Tt.Int64Key{I:age}`, integer(`age`))
 
 	str := Field{Type: String}.KeyRenderer()
 	assert.Equal(t, `tarantool.StringKey{S:name}`, str(`name`))

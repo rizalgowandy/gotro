@@ -24,7 +24,7 @@ var dbConn *tarantool.Connection
 
 func prepareDb(onReady func(db *tarantool.Connection) int) {
 	const dockerRepo = "tarantool/tarantool"
-	const dockerVer = "3.1"
+	const dockerVer = Tt.LatestTarantoolDockerTag
 	const ttPort = "3301/tcp"
 	const dbConnStr = "127.0.0.1:%s"
 	const dbUser = "guest"
@@ -139,6 +139,10 @@ func TestGeneratedZzzUnit(t *testing.T) {
 	assert.False(t, m.SetName("sample"))
 	assert.True(t, m.SetHeightMeter(1.5))
 	assert.False(t, m.SetHeightMeter(1.5))
+	assert.True(t, m.SetCounter(uint64(1)))
+	assert.False(t, m.SetCounter(uint64(1)))
+	assert.True(t, m.SetIsActive(true))
+	assert.False(t, m.SetIsActive(true))
 	assert.True(t, m.HaveMutation())
 	from := m.Zzz
 	assert.True(t, m.SetAll(from, nil, nil))
@@ -166,6 +170,8 @@ func TestGeneratedZzzCRUD(t *testing.T) {
 		x.Coords = []any{1.1, 2.2}
 		x.Name = "sample"
 		x.HeightMeter = 1.5
+		x.Counter = uint64(1)
+		x.IsActive = true
 		assert.True(t, x.DoInsert())
 		assert.Greater(t, x.Id, uint64(0))
 		return x
@@ -179,6 +185,8 @@ func TestGeneratedZzzCRUD(t *testing.T) {
 	assert.Equal(t, rec0.Coords, readInsert0.Coords)
 	assert.Equal(t, rec0.Name, readInsert0.Name)
 	assert.Equal(t, rec0.HeightMeter, readInsert0.HeightMeter)
+	assert.Equal(t, rec0.Counter, readInsert0.Counter)
+	assert.Equal(t, rec0.IsActive, readInsert0.IsActive)
 	assert.True(t, rec0.DoUpdateById())
 	readUpdate0 := NewZzzMutator(a)
 	readUpdate0.Id = rec0.Id
@@ -188,6 +196,8 @@ func TestGeneratedZzzCRUD(t *testing.T) {
 	assert.Equal(t, rec0.Coords, readUpdate0.Coords)
 	assert.Equal(t, rec0.Name, readUpdate0.Name)
 	assert.Equal(t, rec0.HeightMeter, readUpdate0.HeightMeter)
+	assert.Equal(t, rec0.Counter, readUpdate0.Counter)
+	assert.Equal(t, rec0.IsActive, readUpdate0.IsActive)
 	assert.True(t, rec0.SetCreatedAt(int64(2)))
 	assert.True(t, rec0.DoUpdateById())
 	readUpdate0 = NewZzzMutator(a)
@@ -198,6 +208,8 @@ func TestGeneratedZzzCRUD(t *testing.T) {
 	assert.Equal(t, rec0.Coords, readUpdate0.Coords)
 	assert.Equal(t, rec0.Name, readUpdate0.Name)
 	assert.Equal(t, rec0.HeightMeter, readUpdate0.HeightMeter)
+	assert.Equal(t, rec0.Counter, readUpdate0.Counter)
+	assert.Equal(t, rec0.IsActive, readUpdate0.IsActive)
 	assert.True(t, rec0.DoOverwriteById())
 	readOverwrite0 := NewZzzMutator(a)
 	readOverwrite0.Id = rec0.Id
@@ -207,6 +219,8 @@ func TestGeneratedZzzCRUD(t *testing.T) {
 	assert.Equal(t, rec0.Coords, readOverwrite0.Coords)
 	assert.Equal(t, rec0.Name, readOverwrite0.Name)
 	assert.Equal(t, rec0.HeightMeter, readOverwrite0.HeightMeter)
+	assert.Equal(t, rec0.Counter, readOverwrite0.Counter)
+	assert.Equal(t, rec0.IsActive, readOverwrite0.IsActive)
 	rows0 := rec0.FindOffsetLimit(0, 10, rec0.UniqueIndexId())
 	assert.NotNil(t, rows0)
 	arrRows0, _ := rec0.FindArrOffsetLimit(0, 10, rec0.UniqueIndexId())
@@ -223,6 +237,8 @@ func TestGeneratedZzzCRUD(t *testing.T) {
 	assert.Equal(t, rec1.Coords, readInsert1.Coords)
 	assert.Equal(t, rec1.Name, readInsert1.Name)
 	assert.Equal(t, rec1.HeightMeter, readInsert1.HeightMeter)
+	assert.Equal(t, rec1.Counter, readInsert1.Counter)
+	assert.Equal(t, rec1.IsActive, readInsert1.IsActive)
 	assert.True(t, rec1.DoUpdateByName())
 	readUpdate1 := NewZzzMutator(a)
 	readUpdate1.Name = rec1.Name
@@ -232,6 +248,8 @@ func TestGeneratedZzzCRUD(t *testing.T) {
 	assert.Equal(t, rec1.Coords, readUpdate1.Coords)
 	assert.Equal(t, rec1.Name, readUpdate1.Name)
 	assert.Equal(t, rec1.HeightMeter, readUpdate1.HeightMeter)
+	assert.Equal(t, rec1.Counter, readUpdate1.Counter)
+	assert.Equal(t, rec1.IsActive, readUpdate1.IsActive)
 	assert.True(t, rec1.SetCreatedAt(int64(2)))
 	assert.True(t, rec1.DoUpdateByName())
 	readUpdate1 = NewZzzMutator(a)
@@ -242,6 +260,8 @@ func TestGeneratedZzzCRUD(t *testing.T) {
 	assert.Equal(t, rec1.Coords, readUpdate1.Coords)
 	assert.Equal(t, rec1.Name, readUpdate1.Name)
 	assert.Equal(t, rec1.HeightMeter, readUpdate1.HeightMeter)
+	assert.Equal(t, rec1.Counter, readUpdate1.Counter)
+	assert.Equal(t, rec1.IsActive, readUpdate1.IsActive)
 	assert.True(t, rec1.DoOverwriteByName())
 	readOverwrite1 := NewZzzMutator(a)
 	readOverwrite1.Name = rec1.Name
@@ -251,6 +271,8 @@ func TestGeneratedZzzCRUD(t *testing.T) {
 	assert.Equal(t, rec1.Coords, readOverwrite1.Coords)
 	assert.Equal(t, rec1.Name, readOverwrite1.Name)
 	assert.Equal(t, rec1.HeightMeter, readOverwrite1.HeightMeter)
+	assert.Equal(t, rec1.Counter, readOverwrite1.Counter)
+	assert.Equal(t, rec1.IsActive, readOverwrite1.IsActive)
 	rows1 := rec1.FindOffsetLimit(0, 10, rec1.UniqueIndexName())
 	assert.NotNil(t, rows1)
 	arrRows1, _ := rec1.FindArrOffsetLimit(0, 10, rec1.UniqueIndexName())
@@ -266,6 +288,8 @@ func TestGeneratedZzzCRUD(t *testing.T) {
 	u.Coords = []any{1.1, 2.2}
 	u.Name = "sample"
 	u.HeightMeter = 1.5
+	u.Counter = uint64(1)
+	u.IsActive = true
 	assert.True(t, u.DoUpsertById())
 	assert.Greater(t, u.Id, uint64(0))
 	uRead := NewZzzMutator(a)
@@ -276,6 +300,8 @@ func TestGeneratedZzzCRUD(t *testing.T) {
 	assert.Equal(t, u.Coords, uRead.Coords)
 	assert.Equal(t, u.Name, uRead.Name)
 	assert.Equal(t, u.HeightMeter, uRead.HeightMeter)
+	assert.Equal(t, u.Counter, uRead.Counter)
+	assert.Equal(t, u.IsActive, uRead.IsActive)
 	assert.True(t, u.SetCreatedAt(int64(2)))
 	assert.True(t, u.DoUpsertById())
 	uRead = NewZzzMutator(a)
@@ -286,6 +312,86 @@ func TestGeneratedZzzCRUD(t *testing.T) {
 	assert.Equal(t, u.Coords, uRead.Coords)
 	assert.Equal(t, u.Name, uRead.Name)
 	assert.Equal(t, u.HeightMeter, uRead.HeightMeter)
+	assert.Equal(t, u.Counter, uRead.Counter)
+	assert.Equal(t, u.IsActive, uRead.IsActive)
 	assert.True(t, u.DoDeletePermanentById())
+}
+
+func TestGeneratedZzzLargeUnsignedRoundTrip(t *testing.T) {
+	if dbConn == nil {
+		t.Skip("docker unavailable")
+	}
+	a := &Tt.Adapter{Connection: dbConn, Reconnect: reconnect}
+	ok := a.UpsertTable(mZzz.TableZzz, mZzz.TarantoolTables[mZzz.TableZzz])
+	assert.True(t, ok)
+	_ = a.TruncateTable(string(mZzz.TableZzz))
+	const largeUnsignedId = uint64(1<<63) + 77
+	const largeUnsignedValue = uint64(1<<63) + 123
+	const largeSigned = int64(1<<62) + 1234
+	const largeSignedUpdated = int64(1<<62) + 5678
+	rec := NewZzzMutator(a)
+	rec.Id = largeUnsignedId
+	rec.CreatedAt = largeSigned
+	rec.Coords = []any{1.1, 2.2}
+	rec.Name = "sample"
+	rec.HeightMeter = 1.5
+	rec.Counter = largeUnsignedValue
+	rec.IsActive = true
+	assert.True(t, rec.DoInsert())
+	assert.Equal(t, largeUnsignedId, rec.Id)
+	rawRows, err := a.RetryDo(
+		tarantool.NewSelectRequest(rec.SpaceName()).
+			Index(rec.UniqueIndexId()).
+			Limit(1).
+			Iterator(tarantool.IterEq).
+			Key(Tt.Uint64Key{I: largeUnsignedId}),
+	)
+	assert.NoError(t, err)
+	if assert.Len(t, rawRows, 1) {
+		row, ok := rawRows[0].([]any)
+		if assert.True(t, ok) && assert.NotEmpty(t, row) {
+			assert.IsType(t, uint64(0), row[0])
+			assert.Equal(t, largeUnsignedId, row[0])
+			assert.IsType(t, uint64(0), row[5])
+			assert.Equal(t, largeUnsignedValue, row[5])
+		}
+	}
+	readInsert := NewZzzMutator(a)
+	readInsert.Id = largeUnsignedId
+	assert.True(t, readInsert.FindById())
+	assert.Equal(t, rec.Id, readInsert.Id)
+	assert.Equal(t, rec.CreatedAt, readInsert.CreatedAt)
+	assert.Equal(t, rec.Coords, readInsert.Coords)
+	assert.Equal(t, rec.Name, readInsert.Name)
+	assert.Equal(t, rec.HeightMeter, readInsert.HeightMeter)
+	assert.Equal(t, rec.Counter, readInsert.Counter)
+	assert.Equal(t, rec.IsActive, readInsert.IsActive)
+	assert.True(t, rec.SetCreatedAt(largeSignedUpdated))
+	assert.True(t, rec.DoUpdateById())
+	readUpdate := NewZzzMutator(a)
+	readUpdate.Id = largeUnsignedId
+	assert.True(t, readUpdate.FindById())
+	assert.Equal(t, rec.Id, readUpdate.Id)
+	assert.Equal(t, rec.CreatedAt, readUpdate.CreatedAt)
+	assert.Equal(t, rec.Coords, readUpdate.Coords)
+	assert.Equal(t, rec.Name, readUpdate.Name)
+	assert.Equal(t, rec.HeightMeter, readUpdate.HeightMeter)
+	assert.Equal(t, rec.Counter, readUpdate.Counter)
+	assert.Equal(t, rec.IsActive, readUpdate.IsActive)
+	assert.True(t, rec.DoOverwriteById())
+	readOverwrite := NewZzzMutator(a)
+	readOverwrite.Id = largeUnsignedId
+	assert.True(t, readOverwrite.FindById())
+	assert.Equal(t, rec.Id, readOverwrite.Id)
+	assert.Equal(t, rec.CreatedAt, readOverwrite.CreatedAt)
+	assert.Equal(t, rec.Coords, readOverwrite.Coords)
+	assert.Equal(t, rec.Name, readOverwrite.Name)
+	assert.Equal(t, rec.HeightMeter, readOverwrite.HeightMeter)
+	assert.Equal(t, rec.Counter, readOverwrite.Counter)
+	assert.Equal(t, rec.IsActive, readOverwrite.IsActive)
+	assert.True(t, rec.DoDeletePermanentById())
+	deleted := NewZzzMutator(a)
+	deleted.Id = largeUnsignedId
+	assert.False(t, deleted.FindById())
 }
 

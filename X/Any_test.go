@@ -523,6 +523,17 @@ func TestToUPreservesLargeUnsignedText(t *testing.T) {
 	}
 }
 
+func TestToSPreservesLargeUnsignedValues(t *testing.T) {
+	const want = `9223372036854775885`
+	large := uint64(1<<63) + 77
+	if got := ToS(large); got != want {
+		t.Fatalf("ToS must not format large uint64 as a negative int64, got %q", got)
+	}
+	if got := ToS(&large); got != want {
+		t.Fatalf("ToS must not format *uint64 as a negative int64, got %q", got)
+	}
+}
+
 func TestToSBoolToArrAndJson5AdditionalBranches(t *testing.T) {
 	var nilAny *any
 

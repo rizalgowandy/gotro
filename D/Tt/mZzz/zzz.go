@@ -9,6 +9,8 @@ const (
 	Coords                   = `coords`
 	Name                     = `name`
 	HeightMeter              = `heightMeter`
+	Counter                  = `counter`
+	IsActive                 = `isActive`
 )
 
 var TarantoolTables = map[Tt.TableName]*Tt.TableProp{
@@ -21,6 +23,8 @@ var TarantoolTables = map[Tt.TableName]*Tt.TableProp{
 			{Coords, Tt.Array},
 			{Name, Tt.String},
 			{HeightMeter, Tt.Double},
+			{Counter, Tt.Unsigned},
+			{IsActive, Tt.Boolean},
 		},
 		Engine:          Tt.Memtx,
 		AutoIncrementId: true,

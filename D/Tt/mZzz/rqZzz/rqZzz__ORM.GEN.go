@@ -25,6 +25,8 @@ type Zzz struct {
 	Coords      []any
 	Name        string
 	HeightMeter float64
+	Counter     uint64
+	IsActive    bool
 }
 
 // NewZzz create new ORM reader/query object
@@ -53,7 +55,7 @@ func (z *Zzz) FindById() bool { //nolint:dupl false positive
 		Index(z.UniqueIndexId()).
 		Limit(1).
 		Iterator(tarantool.IterEq).
-		Key(tarantool.UintKey{I:uint(z.Id)}),
+		Key(Tt.Uint64Key{I:z.Id}),
 	)
 	if L.IsError(err, `Zzz.FindById failed: `+z.SpaceName()) {
 		return false
@@ -105,6 +107,8 @@ func (z *Zzz) SqlSelectAllFields() string { //nolint:dupl false positive
 	, "coords"
 	, "name"
 	, "heightMeter"
+	, "counter"
+	, "isActive"
 	`
 }
 
@@ -115,6 +119,8 @@ func (z *Zzz) SqlSelectAllUncensoredFields() string { //nolint:dupl false positi
 	, "coords"
 	, "name"
 	, "heightMeter"
+	, "counter"
+	, "isActive"
 	`
 }
 
@@ -125,7 +131,9 @@ func (z *Zzz) ToUpdateArray() *tarantool.Operations { //nolint:dupl false positi
 		Assign(1, z.CreatedAt).
 		Assign(2, z.Coords).
 		Assign(3, z.Name).
-		Assign(4, z.HeightMeter)
+		Assign(4, z.HeightMeter).
+		Assign(5, z.Counter).
+		Assign(6, z.IsActive)
 }
 
 // IdxId return name of the index
@@ -178,6 +186,26 @@ func (z *Zzz) SqlHeightMeter() string { //nolint:dupl false positive
 	return `"heightMeter"`
 }
 
+// IdxCounter return name of the index
+func (z *Zzz) IdxCounter() int { //nolint:dupl false positive
+	return 5
+}
+
+// SqlCounter return name of the column being indexed
+func (z *Zzz) SqlCounter() string { //nolint:dupl false positive
+	return `"counter"`
+}
+
+// IdxIsActive return name of the index
+func (z *Zzz) IdxIsActive() int { //nolint:dupl false positive
+	return 6
+}
+
+// SqlIsActive return name of the column being indexed
+func (z *Zzz) SqlIsActive() string { //nolint:dupl false positive
+	return `"isActive"`
+}
+
 // ToArray receiver fields to slice
 func (z *Zzz) ToArray() A.X { //nolint:dupl false positive
 	var id any = nil
@@ -190,6 +218,8 @@ func (z *Zzz) ToArray() A.X { //nolint:dupl false positive
 		z.Coords,      // 2
 		z.Name,        // 3
 		z.HeightMeter, // 4
+		z.Counter,     // 5
+		z.IsActive,    // 6
 	}
 }
 
@@ -200,6 +230,8 @@ func (z *Zzz) FromArray(ax A.X) *Zzz { //nolint:dupl false positive
 	z.Coords = X.ToArr(ax[2])
 	z.Name = X.ToS(ax[3])
 	z.HeightMeter = X.ToF(ax[4])
+	z.Counter = X.ToU(ax[5])
+	z.IsActive = X.ToBool(ax[6])
 	return z
 }
 
@@ -210,6 +242,8 @@ func (z *Zzz) FromUncensoredArray(ax A.X) *Zzz { //nolint:dupl false positive
 	z.Coords = X.ToArr(ax[2])
 	z.Name = X.ToS(ax[3])
 	z.HeightMeter = X.ToF(ax[4])
+	z.Counter = X.ToU(ax[5])
+	z.IsActive = X.ToBool(ax[6])
 	return z
 }
 
@@ -279,6 +313,8 @@ var ZzzFieldTypeMap = map[string]Tt.DataType { //nolint:dupl false positive
 	`coords`:      Tt.Array,
 	`name`:        Tt.String,
 	`heightMeter`: Tt.Double,
+	`counter`:     Tt.Unsigned,
+	`isActive`:    Tt.Boolean,
 }
 
 // DO NOT EDIT, will be overwritten by github.com/kokizzu/D/Tt/tarantool_orm_generator.go

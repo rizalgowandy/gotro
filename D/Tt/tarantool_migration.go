@@ -156,11 +156,11 @@ func (f Field) KeyRenderer() func(string) string {
 	switch f.Type {
 	case Unsigned:
 		return func(structProp string) string {
-			return "tarantool.UintKey{I:uint(" + structProp + `)}`
+			return "Tt.Uint64Key{I:" + structProp + `}`
 		}
 	case Integer:
 		return func(structProp string) string {
-			return "tarantool.IntKey{I:int(" + structProp + `)}`
+			return "Tt.Int64Key{I:" + structProp + `}`
 		}
 	case String:
 		return func(structProp string) string {

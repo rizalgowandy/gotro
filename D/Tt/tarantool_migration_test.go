@@ -22,7 +22,7 @@ var globalPool *dockertest.Pool
 
 func prepareDb(onReady func(db *tarantool.Connection) int) {
 	const dockerRepo = `tarantool/tarantool`
-	const imageVer = `3.1`
+	const imageVer = LatestTarantoolDockerTag
 	const ttPort = `3301/tcp`
 	const dbConnStr = `127.0.0.1:%s`
 	const dbUser = `guest`
@@ -35,7 +35,7 @@ func prepareDb(onReady func(db *tarantool.Connection) int) {
 			os.Exit(onReady(nil))
 		}
 	}
-	resource, err := globalPool.Run(dockerRepo, imageVer, []string{ // TODO: update to 3.1
+	resource, err := globalPool.Run(dockerRepo, imageVer, []string{
 		`TT_READAHEAD=1632000`,       // 10x
 		`TT_VINYL_MEMORY=1717986918`, // 16x
 		`TT_VINYL_CACHE=536870912`,   // 2x
