@@ -504,6 +504,25 @@ func TestConvertersAdditionalScalarAndDefaultBranches(t *testing.T) {
 	}
 }
 
+func TestToUPreservesLargeUnsignedText(t *testing.T) {
+	const maxUint = `18446744073709551615`
+	if got := ToU(maxUint); got != ^uint64(0) {
+		t.Fatalf("ToU must preserve max uint64 string exactly, got %d", got)
+	}
+	if got := ToU([]byte(maxUint)); got != ^uint64(0) {
+		t.Fatalf("ToU must preserve max uint64 bytes exactly, got %d", got)
+	}
+	if got := ToU(`9007199254740993`); got != uint64(9007199254740993) {
+		t.Fatalf("ToU must not round values above JS safe integer range, got %d", got)
+	}
+	if got := ToU(`-1`); got != 0 {
+		t.Fatalf("ToU must not wrap negative text into max uint64, got %d", got)
+	}
+	if got := ToU(`12.9`); got != 12 {
+		t.Fatalf("ToU should keep decimal-string compatibility, got %d", got)
+	}
+}
+
 func TestToSBoolToArrAndJson5AdditionalBranches(t *testing.T) {
 	var nilAny *any
 

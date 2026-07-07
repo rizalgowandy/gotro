@@ -117,19 +117,13 @@ func ToU(x any) uint64 {
 		}
 		return 0
 	case []byte:
-		if val, err := strconv.ParseInt(string(v), 10, 64); err == nil {
-			return uint64(val)
-		}
-		if val, err := strconv.ParseFloat(string(v), 64); err == nil {
-			return uint64(val)
+		if val, ok := parseUintLosslessly(string(v)); ok {
+			return val
 		}
 		L.ParentDescribe(`Can't convert to uint64`, x)
 	case string:
-		if val, err := strconv.ParseInt(v, 10, 64); err == nil {
-			return uint64(val)
-		}
-		if val, err := strconv.ParseFloat(v, 64); err == nil {
-			return uint64(val)
+		if val, ok := parseUintLosslessly(v); ok {
+			return val
 		}
 		L.ParentDescribe(`Can't convert to uint64`, x)
 	case *any:
@@ -140,6 +134,23 @@ func ToU(x any) uint64 {
 		L.ParentDescribe(`Can't convert to uint64`, x)
 	}
 	return 0
+}
+
+func parseUintLosslessly(raw string) (uint64, bool) {
+	value := strings.TrimSpace(raw)
+	if value == `` {
+		return 0, false
+	}
+	if val, err := strconv.ParseUint(value, 10, 64); err == nil {
+		return val, true
+	}
+	if !strings.ContainsAny(value, `.eE`) {
+		return 0, false
+	}
+	if val, err := strconv.ParseFloat(value, 64); err == nil {
+		return uint64(val), true
+	}
+	return 0, false
 }
 
 // ToByte convert any data type to int8
