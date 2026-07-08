@@ -1,10 +1,13 @@
-.PHONY: verify-tarantool-stack verify-core status-changed-files commit-push pullpush
+.PHONY: verify-tarantool-stack verify-core verify-dependency-security status-changed-files commit-push pullpush
 
 verify-tarantool-stack:
 	bash ./scripts/verify-tarantool-stack.sh
 
 verify-core:
 	bash ./scripts/verify-core.sh
+
+verify-dependency-security:
+	bash ./scripts/verify-dependency-security.sh
 
 status-changed-files:
 	bash ./scripts/status-changed-files.sh
