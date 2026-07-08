@@ -22,7 +22,7 @@ require (
 	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible
 	github.com/jxskiss/base62 v1.1.0
 	github.com/kokizzu/ch-timed-buffer v1.2025.1416
-	github.com/kokizzu/json5b v0.1.3
+	github.com/kokizzu/json5b v0.1.4
 	github.com/kokizzu/rand v0.0.0-20221021123447-6043c55a8bad
 	github.com/kpango/fastime v1.1.10
 	github.com/kr/pretty v0.3.1
@@ -84,6 +84,8 @@ require (
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/klauspost/compress v1.19.0 // indirect
 	github.com/klauspost/cpuid/v2 v2.4.0 // indirect
+	github.com/kokizzu/id64 v1.2829.1452 // indirect
+	github.com/kokizzu/lexid v1.2423.1347 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mattn/go-colorable v0.1.15 // indirect
@@ -96,7 +98,7 @@ require (
 	github.com/nightlyone/lockfile v1.0.0 // indirect
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/opencontainers/image-spec v1.1.1 // indirect
-	github.com/opencontainers/runc v1.3.3 // indirect
+	github.com/opencontainers/runc v1.3.6 // indirect
 	github.com/paulmach/orb v0.13.0 // indirect
 	github.com/pierrec/lz4/v4 v4.1.27 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
