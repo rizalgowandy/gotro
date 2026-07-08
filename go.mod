@@ -128,3 +128,5 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	mvdan.cc/gofumpt v0.2.1 // indirect
 )
+
+exclude github.com/docker/docker v27.1.1+incompatible
