@@ -16,6 +16,7 @@ import (
 	"github.com/kokizzu/lexid"
 	"github.com/kpango/fastime"
 	"github.com/ory/dockertest/v3"
+	"github.com/tarantool/go-tarantool/v2"
 	"golang.org/x/sync/errgroup"
 
 	"example2/conf"
@@ -77,10 +78,9 @@ func TestMain(m *testing.M) {
 		// attach tarantool
 		eg.Go(func() error {
 			tdt := &Tt.TtDockerTest{
-				User:     "testT",
-				Password: "passT",
+				User: "guest",
 			}
-			img := tdt.ImageVersion(dockerPool, ``)
+			img := tdt.ImageVersion(dockerPool, Tt.LatestTarantoolDockerTag)
 			dockerPool.Spawn(img, func(res *dockertest.Resource) error {
 				t, err := tdt.ConnectCheck(res)
 				if err != nil {

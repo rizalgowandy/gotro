@@ -187,12 +187,8 @@ github.com/klauspost/cpuid/v2 v2.4.0 h1:S6Hrbc7+ywsr0r+RLapfGBHfyefhCTwEh3A0tV91
 github.com/klauspost/cpuid/v2 v2.4.0/go.mod h1:19jmZ9mjzoF//ddRSUsv0zfBTJWh3QJh9FNxZTMrGxU=
 github.com/kokizzu/ch-timed-buffer v1.2025.1416 h1:Zv+qFgHXzbzNuZeZ1T9w0i8EqbAh5wQsMYgOfaOnJZw=
 github.com/kokizzu/ch-timed-buffer v1.2025.1416/go.mod h1:suljwZStFE7EWVhtfVP+QHkgduRFGqXS4kTL22UwTRQ=
-github.com/kokizzu/id64 v1.2829.1452 h1:d+hbN+0YOX51AUYCU6pIVuLnsKhL1TNDBwBfHKevdX8=
-github.com/kokizzu/id64 v1.2829.1452/go.mod h1:ssdJfBhCjVs02lh6QutYOO8ZH+PWe5MDPh2gehPRgqU=
 github.com/kokizzu/json5b v0.1.4 h1:nAxdMV4jiuYGm5PO+eexBMi9EdU9kBXGyN6KzOGdHtI=
 github.com/kokizzu/json5b v0.1.4/go.mod h1:VhiyJjWNejIKGLmRz/w5p/kebWRpbYdcDtrF+BGby0A=
-github.com/kokizzu/lexid v1.2423.1347 h1:EJl5H+WX9/FC5/lDOjwylTvh7k2IKxaYeV+F6idbLMo=
-github.com/kokizzu/lexid v1.2423.1347/go.mod h1:icv86ga26QLKCDCZcS6iyYhfJCwSPd7HrlF25xNjiEE=
 github.com/kokizzu/rand v0.0.0-20221021123447-6043c55a8bad h1:qWvljqz38n8hxJ3h3vXc571jWNQWEqwN4gwmu2anT3Y=
 github.com/kokizzu/rand v0.0.0-20221021123447-6043c55a8bad/go.mod h1:FQuP+i28vq8vNBPWOuNriHLkC3khLXtLPw6rzWGyxZw=
 github.com/kpango/fastime v1.1.10 h1:boywNfz1ulTHGtrCwT9T4e2ai1n+1XcUYTkjg6L8gH0=
