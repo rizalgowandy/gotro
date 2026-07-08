@@ -113,3 +113,5 @@ require (
 	golang.org/x/text v0.39.0 // indirect
 	golang.org/x/xerrors v0.0.0-20231012003039-104605ab7028 // indirect
 )
+
+exclude github.com/docker/docker v27.1.1+incompatible
